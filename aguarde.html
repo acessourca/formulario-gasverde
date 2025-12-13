@@ -34,6 +34,12 @@
       line-height: 1.6;
       margin-bottom: 10px;
     }
+    .countdown {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #007a33;
+      margin-top: 15px;
+    }
     .loader {
       border: 6px solid #f3f3f3;
       border-top: 6px solid #007a33;
@@ -54,16 +60,23 @@
       const baseGrantUrl = params.get("base_grant_url");
       const continueUrl = params.get("user_continue_url") || "https://gasverde.com.br";
 
-      if (baseGrantUrl) {
-        const grantRedirect = `${baseGrantUrl}?continue_url=${encodeURIComponent(continueUrl)}`;
-        setTimeout(() => {
-          window.location.href = grantRedirect;
-        }, 10000);
-      } else {
-        setTimeout(() => {
+      let seconds = 10;
+      const countdownEl = document.getElementById("countdown");
+      countdownEl.textContent = seconds;
+
+      const timer = setInterval(() => {
+        seconds--;
+        countdownEl.textContent = seconds;
+        if (seconds <= 0) clearInterval(timer);
+      }, 1000);
+
+      setTimeout(() => {
+        if (baseGrantUrl) {
+          window.location.href = `${baseGrantUrl}?continue_url=${encodeURIComponent(continueUrl)}`;
+        } else {
           window.location.href = continueUrl;
-        }, 10000);
-      }
+        }
+      }, 10000);
     });
   </script>
 </head>
@@ -71,7 +84,7 @@
   <div class="message-box" role="main">
     <h1>Acesso Liberado</h1>
     <p>Você finalizou o preenchimento com sucesso.</p>
-    <p>Em instantes você será redirecionado e seu acesso será liberado automaticamente.</p>
+    <div id="countdown" class="countdown"></div>
     <div class="loader" aria-label="Carregando..."></div>
   </div>
 </body>
